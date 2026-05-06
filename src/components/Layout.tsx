@@ -58,11 +58,11 @@ const Navbar = () => {
       <nav className={`transition-all duration-300 ${scrolled ? 'bg-white shadow-lg' : 'bg-white/95 backdrop-blur-md shadow-sm'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            <Link to="/" className="flex items-center space-x-2">
+            <Link to="/" className="flex items-center">
               <img
                 src="/logo.png"
                 alt="XS PLUS - Trần Nhôm Kiến Trúc"
-                className="h-12 md:h-14 w-auto object-contain"
+                className="h-14 md:h-16 w-auto object-contain"
               />
             </Link>
 
@@ -153,7 +153,7 @@ const Footer = () => {
             <img
               src="/logo.png"
               alt="XS PLUS Logo"
-              className="h-14 w-auto object-contain bg-white px-3 py-2 rounded-lg"
+              className="h-16 w-auto object-contain brightness-0 invert"
             />
             <p className="text-white/60 text-sm leading-relaxed">
               Dẫn đầu công nghệ trần nhôm kiến trúc tại Việt Nam. Xưởng sản xuất hiện đại, phân phối toàn quốc cho Đại lý, Thợ thi công và Dự án.
