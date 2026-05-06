@@ -12,7 +12,7 @@ const TopBar = () => (
   <div className="bg-brand-gray text-white/80 py-2 text-xs hidden md:block border-b border-white/10">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
       <div className="flex space-x-6">
-        <span className="flex items-center"><MapPin size={14} className="mr-2 text-brand-orange" /> KCN Thạch Quý, TP. Hà Tĩnh</span>
+        <span className="flex items-center"><MapPin size={14} className="mr-2 text-brand-orange" /> 319 Trần Phú, Thạch Linh, Tp. Hà Tĩnh</span>
         <span className="flex items-center"><Mail size={14} className="mr-2 text-brand-orange" /> {EMAIL}</span>
       </div>
       <div className="flex items-center space-x-4">
@@ -62,7 +62,7 @@ const Navbar = () => {
               <img
                 src="/logo.png"
                 alt="XS PLUS - Trần Nhôm Kiến Trúc"
-                className="h-14 md:h-16 w-auto object-contain"
+                className="h-14 md:h-16 w-auto object-contain contrast-[1.2] saturate-150 drop-shadow-sm"
               />
             </Link>
 
@@ -192,9 +192,9 @@ const Footer = () => {
           <div>
             <h4 className="font-display font-medium text-lg mb-6">Văn phòng & Nhà máy</h4>
             <ul className="space-y-4 text-white/60 text-sm">
-              <li className="flex items-start space-x-3">
-                <MapPin className="text-brand-orange mt-1 shrink-0" size={18} />
-                <span>KCN Thạch Quý, TP. Hà Tĩnh, Tỉnh Hà Tĩnh</span>
+              <li className="flex items-start text-white/70">
+                <MapPin className="mr-3 h-5 w-5 text-brand-orange shrink-0 mt-0.5" />
+                <span>319 Trần Phú, Thạch Linh, Tp. Hà Tĩnh</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Phone className="text-brand-orange shrink-0" size={18} />
