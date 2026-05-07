@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "motion/react";
 import {
@@ -13,11 +13,14 @@ import {
   Phone,
   MessageCircle,
   Star,
+  Ruler,
+  Layers,
 } from "lucide-react";
-import { useRef } from "react";
 import { QuoteModal } from "../components/QuoteModal";
 import { ZALO_URL, HOTLINE_DISPLAY, HOTLINE } from "../components/Layout";
 import { useSEO } from "../hooks/useSEO";
+import { getProducts, type Product } from "../utils/productsData";
+import { getProductImage } from "../utils/imageFallback";
 
 const Hero = ({ setQuoteOpen }: { setQuoteOpen: (v: boolean) => void }) => {
   const containerRef = useRef(null);
@@ -177,38 +180,78 @@ const PartnerMarquee = () => {
   );
 };
 
+// Category fallback images — đảm bảo luôn có ảnh đẹp dù Supabase chưa có
+const CATEGORY_FALLBACKS: Record<string, string> = {
+  'Clip-in': 'https://images.unsplash.com/photo-1558441719-ff34b0524a24?auto=format&fit=crop&w=800&q=80',
+  'Lay-in': 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80',
+  'Caro': 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80',
+  'U-Shaped': 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
+  'Linear': 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=800&q=80',
+};
+
+// Màu badge theo category
+const CATEGORY_COLORS: Record<string, string> = {
+  'Clip-in': 'bg-blue-500/90',
+  'Lay-in': 'bg-emerald-500/90',
+  'Caro': 'bg-brand-orange/90',
+  'U-Shaped': 'bg-purple-500/90',
+  'Linear': 'bg-rose-500/90',
+};
+
+// Bento layout pattern: [colSpan, rowSpan]
+const BENTO_LAYOUT = [
+  { col: 'md:col-span-2', row: 'md:row-span-2' }, // large
+  { col: '',              row: '' },               // small
+  { col: '',              row: '' },               // small
+  { col: 'md:col-span-2', row: '' },               // wide
+];
+
+// Static fallback khi Supabase chưa load được
+const STATIC_FEATURED = [
+  { id: 'cat-caro',    name: 'Hệ Caro (Cell)',  category: 'Caro',     thickness: '0.7mm', perfor: 'Đục lỗ đa dạng', color: 'Trắng sứ / Vân gỗ',   desc: 'Không gian mở, sáng tạo & phong cách kiến trúc.' },
+  { id: 'cat-layin',   name: 'Trần Lay-in',     category: 'Lay-in',   thickness: '0.6mm', perfor: 'Trơn / Đục lỗ',  color: 'Trắng sứ',             desc: 'Tháo lắp linh hoạt, dễ dàng bảo trì bên trên.' },
+  { id: 'cat-clipin',  name: 'Trần Clip-in',    category: 'Clip-in',  thickness: '0.7mm', perfor: 'Trơn',           color: 'Trắng sứ / Đen nhám',  desc: 'Hệ xương chìm, tối giản & bề mặt đồng nhất.' },
+  { id: 'cat-ushaped', name: 'Hệ U-Shaped',     category: 'U-Shaped', thickness: '0.8mm', perfor: 'Trơn',           color: 'Theo yêu cầu',          desc: 'Hiệu ứng sọc dọc, chiều sâu kiến trúc ấn tượng.' },
+];
+
 const ProductBento = () => {
-  const products = [
-    {
-      title: "Hệ Caro (Cell)",
-      desc: "Không gian mở, sáng tạo & phong cách.",
-      img: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80",
-      colSpan: "md:col-span-2",
-      rowSpan: "md:row-span-2",
-    },
-    {
-      title: "Trần Lay-in",
-      desc: "Tháo lắp linh hoạt, dễ dàng bảo trì.",
-      img: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      title: "Trần Clip-in",
-      desc: "Hệ xương chìm, tối giản & đồng nhất.",
-      img: "https://images.unsplash.com/photo-1558441719-ff34b0524a24?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      title: "Hệ U-Shaped",
-      desc: "Hiệu ứng sọc dọc, chiều sâu ấn tượng.",
-      img: "https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=800&q=80",
-      colSpan: "md:col-span-2",
-    },
-  ];
+  const [featured, setFeatured] = useState<(Product | typeof STATIC_FEATURED[0])[]>(STATIC_FEATURED);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    getProducts().then(all => {
+      // Lấy featured products (is_featured = true), nếu ko đủ 4 thì lấy sort_order đầu
+      const f = all.filter(p => p.is_featured);
+      const picked = f.length >= 4 ? f.slice(0, 4) : all.slice(0, 4);
+      if (picked.length >= 2) {
+        setFeatured(picked);
+      }
+      setLoaded(true);
+    }).catch(() => setLoaded(true));
+  }, []);
+
+  const getImg = (p: typeof STATIC_FEATURED[0] | Product) => {
+    const prod = p as Product;
+    if (prod.image_url) return getProductImage(prod);
+    return CATEGORY_FALLBACKS[p.category] || CATEGORY_FALLBACKS['Clip-in'];
+  };
+
+  const getLink = (p: typeof STATIC_FEATURED[0] | Product) => {
+    // Static fallback IDs bắt đầu bằng 'cat-' → link về catalog filter
+    if (p.id.startsWith('cat-')) return `/catalog`;
+    return `/san-pham/${p.id}`;
+  };
 
   return (
     <section className="py-24 bg-surface-bright">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
             <div className="flex items-center space-x-4 mb-4">
               <div className="h-[1px] w-8 bg-brand-orange" />
               <span className="text-brand-orange text-xs font-bold uppercase tracking-widest">
@@ -218,52 +261,133 @@ const ProductBento = () => {
             <h2 className="text-2xl md:text-3xl lg:text-4xl text-brand-gray tracking-tighter uppercase font-medium">
               Sản Phẩm Nổi Bật
             </h2>
+            <p className="text-brand-gray/50 text-sm mt-3 max-w-md">
+              4 dòng trần nhôm chủ lực — đáp ứng mọi yêu cầu thiết kế từ văn phòng đến công trình kiến trúc cao cấp.
+            </p>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+          >
+            <Link
+              to="/catalog"
+              className="inline-flex items-center px-6 py-3 border border-brand-gray/20 text-sm font-bold text-brand-gray hover:bg-brand-gray hover:text-white uppercase tracking-wide group transition-all duration-300 rounded-sm"
+            >
+              Xem toàn bộ ({loaded ? '...' : ''})
+              <ArrowUpRight
+                size={16}
+                className="ml-2 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+              />
+            </Link>
+          </motion.div>
+        </div>
+
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[260px] sm:auto-rows-[300px]">
+          {featured.slice(0, 4).map((p, i) => {
+            const layout = BENTO_LAYOUT[i] || { col: '', row: '' };
+            const badgeColor = CATEGORY_COLORS[p.category] || 'bg-brand-gray/90';
+
+            return (
+              <motion.div
+                key={p.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className={`${layout.col} ${layout.row}`}
+              >
+                <Link
+                  to={getLink(p)}
+                  className="relative group overflow-hidden rounded-lg bg-brand-gray h-full flex flex-col"
+                >
+                  {/* Image */}
+                  <img
+                    src={getImg(p)}
+                    alt={p.name}
+                    className="absolute inset-0 w-full h-full object-cover opacity-75 group-hover:scale-110 group-hover:opacity-55 transition-all duration-700 ease-out"
+                    loading={i === 0 ? 'eager' : 'lazy'}
+                  />
+
+                  {/* Gradients */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-brand-orange/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                  {/* Category badge (top-left) */}
+                  <div className="absolute top-4 left-4 z-10">
+                    <span className={`${badgeColor} text-white text-[10px] font-bold px-2.5 py-1 rounded-sm backdrop-blur-sm uppercase tracking-widest`}>
+                      {p.category}
+                    </span>
+                  </div>
+
+                  {/* Arrow (top-right) */}
+                  <div className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300 border border-white/20">
+                    <ArrowUpRight className="text-white" size={16} />
+                  </div>
+
+                  {/* Content (bottom) */}
+                  <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7 z-10">
+                    {/* Specs row — visible on large card or on hover */}
+                    <div className={`flex items-center space-x-3 mb-3 transition-all duration-300 ${i === 0 ? 'opacity-70' : 'opacity-0 group-hover:opacity-70 translate-y-2 group-hover:translate-y-0'}`}>
+                      <div className="flex items-center space-x-1 text-white/60 text-[10px]">
+                        <Ruler size={10} className="text-brand-orange" />
+                        <span>{p.thickness}</span>
+                      </div>
+                      <div className="w-[1px] h-3 bg-white/20" />
+                      <div className="flex items-center space-x-1 text-white/60 text-[10px]">
+                        <Layers size={10} className="text-brand-orange" />
+                        <span>{p.perfor}</span>
+                      </div>
+                    </div>
+
+                    <h3 className={`text-white font-bold uppercase tracking-tight mb-1.5 group-hover:text-brand-orange transition-colors duration-300 ${i === 0 ? 'text-xl md:text-2xl' : 'text-base md:text-lg'}`}>
+                      {p.name}
+                    </h3>
+                    <p className={`text-white/60 leading-relaxed line-clamp-2 transition-all duration-300 ${i === 0 ? 'text-sm opacity-80' : 'text-xs opacity-0 group-hover:opacity-80 translate-y-1 group-hover:translate-y-0'}`}>
+                      {(p as typeof STATIC_FEATURED[0]).desc || p.color}
+                    </p>
+
+                    {/* CTA line */}
+                    <div className="flex items-center mt-3 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                      <div className="h-[1px] flex-1 bg-brand-orange/50" />
+                      <span className="text-brand-orange text-[10px] font-bold uppercase tracking-widest ml-3">Xem chi tiết</span>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* Bottom CTA strip */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4 }}
+          className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 bg-white border border-surface-dim rounded-lg"
+        >
+          <div className="flex items-center space-x-6">
+            {(['Clip-in', 'Lay-in', 'Caro', 'U-Shaped'] as const).map(cat => (
+              <Link
+                key={cat}
+                to={`/catalog`}
+                className="text-xs font-bold text-brand-gray/50 hover:text-brand-orange uppercase tracking-widest transition-colors hidden sm:block"
+              >
+                {cat}
+              </Link>
+            ))}
           </div>
           <Link
             to="/catalog"
-            className="inline-flex items-center text-sm font-bold text-brand-gray hover:text-brand-orange uppercase tracking-wide group transition-colors"
+            className="text-xs font-bold text-brand-orange flex items-center hover:gap-3 gap-2 transition-all uppercase tracking-widest"
           >
-            Xem toàn bộ sản phẩm
-            <ArrowUpRight
-              size={16}
-              className="ml-1 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
-            />
+            Xem toàn bộ danh mục
+            <ArrowRight size={14} />
           </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[250px] sm:auto-rows-[300px]">
-          {products.map((p, i) => (
-            <Link
-              to="/catalog"
-              key={i}
-              className={`relative group overflow-hidden rounded bg-black ${p.colSpan || ""} ${p.rowSpan || ""}`}
-            >
-              <img
-                src={p.img}
-                alt={p.title}
-                className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 group-hover:opacity-50 transition-all duration-700 ease-out"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-
-              <div className="absolute bottom-0 left-0 p-6 sm:p-8 w-full">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-lg md:text-xl font-bold text-white mb-2 uppercase tracking-tight">
-                      {p.title}
-                    </h3>
-                    <p className="text-white/70 text-xs sm:text-sm hidden sm:block line-clamp-1">
-                      {p.desc}
-                    </p>
-                  </div>
-                  <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-white/20">
-                    <ArrowUpRight className="text-white" size={18} />
-                  </div>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
