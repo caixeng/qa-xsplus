@@ -89,8 +89,8 @@ const Navbar = () => {
                 <span className="text-xl sm:text-2xl font-display font-black tracking-tighter text-brand-gray group-hover:text-brand-orange transition-colors">
                   XS PLUS<span className="text-brand-orange">.</span>
                 </span>
-                <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-brand-gray/40">
-                  Marketing Platform
+                <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-brand-gray/40 leading-none">
+                  Nhà Máy Trần Nhôm Cao Cấp
                 </span>
               </div>
             </Link>
@@ -249,7 +249,7 @@ const Footer = () => {
                   XS PLUS<span className="text-brand-orange">.</span>
                 </span>
                 <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">
-                  Marketing Platform
+                  Nhà Máy Trần Nhôm Cao Cấp
                 </span>
               </div>
             </Link>
@@ -350,7 +350,7 @@ const Footer = () => {
 
         <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
           <p className="text-white/30 text-[11px] font-bold uppercase tracking-[0.3em]">
-            © 2026 XS PLUS MARKETING PLATFORM. ALL RIGHTS RESERVED.
+            © 2026 XS Plus — Nhà Máy Trần Nhôm Hà Tĩnh. All Rights Reserved.
           </p>
           <div className="flex space-x-10 text-white/30 text-[11px] font-bold uppercase tracking-widest">
             <Link to="/chinh-sach" className="hover:text-brand-orange transition-colors">Chính sách bảo mật</Link>
