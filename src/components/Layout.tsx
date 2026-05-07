@@ -3,9 +3,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Phone, Mail, MapPin, MessageCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
-const HOTLINE = '0378226269';
-const HOTLINE_DISPLAY = '0378 226 269';
-const ZALO_URL = `https://zalo.me/${HOTLINE}`;
+export const HOTLINE = '0378226269';
+export const HOTLINE_DISPLAY = '0378 226 269';
+export const ZALO_URL = `https://zalo.me/${HOTLINE}`;
 const EMAIL = 'xsplus@gmail.com';
 
 const TopBar = () => (
@@ -46,11 +46,15 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Trang chủ', path: '/' },
+    { name: 'Giới thiệu', path: '/gioi-thieu' },
     { name: 'Sản phẩm', path: '/catalog' },
+    { name: 'Dự án', path: '/du-an' },
+    { name: 'Tin tức', path: '/tin-tuc' },
     { name: 'Tính vật tư', path: '/calculator' },
     { name: 'Tài liệu KT', path: '/technical' },
     { name: 'Đại lý / Thầu', path: '/portal' },
   ];
+
 
   return (
     <div className="sticky top-0 z-50 w-full flex flex-col">
@@ -62,7 +66,7 @@ const Navbar = () => {
               <img
                 src="/logo.png"
                 alt="XS PLUS - Trần Nhôm Kiến Trúc"
-                className="h-14 md:h-16 w-auto object-contain contrast-[1.2] saturate-150 drop-shadow-sm"
+                className="h-[64px] md:h-[76px] w-auto object-contain contrast-[1.2] saturate-150 drop-shadow-sm"
               />
             </Link>
 
@@ -153,7 +157,7 @@ const Footer = () => {
             <img
               src="/logo.png"
               alt="XS PLUS Logo"
-              className="h-16 w-auto object-contain brightness-0 invert"
+              className="h-16 w-auto object-contain contrast-[1.2] saturate-150 drop-shadow-sm"
             />
             <p className="text-white/60 text-sm leading-relaxed">
               Dẫn đầu công nghệ trần nhôm kiến trúc tại Việt Nam. Xưởng sản xuất hiện đại, phân phối toàn quốc cho Đại lý, Thợ thi công và Dự án.
@@ -170,11 +174,12 @@ const Footer = () => {
           <div>
             <h4 className="font-display font-medium text-lg mb-6">Liên kết nhanh</h4>
             <ul className="space-y-3 text-white/60 text-sm">
+              <li><Link to="/gioi-thieu" className="hover:text-brand-orange transition-colors">Về XS Plus</Link></li>
               <li><Link to="/catalog" className="hover:text-brand-orange transition-colors">Danh mục sản phẩm</Link></li>
               <li><Link to="/technical" className="hover:text-brand-orange transition-colors">Tài liệu kỹ thuật & CAD</Link></li>
               <li><Link to="/calculator" className="hover:text-brand-orange transition-colors">Công cụ tính vật tư</Link></li>
               <li><Link to="/portal" className="hover:text-brand-orange transition-colors">Cổng đại lý / Thợ thầu</Link></li>
-              <li><a href="#" className="hover:text-brand-orange transition-colors">Chính sách bảo hành</a></li>
+              <li><Link to="/chinh-sach" className="hover:text-brand-orange transition-colors">Chính sách bảo hành</Link></li>
             </ul>
           </div>
 
@@ -213,6 +218,31 @@ const Footer = () => {
           </div>
         </div>
 
+        {/* Google Maps */}
+        <div className="mt-8 rounded-xl overflow-hidden border border-white/10">
+          <div style={{ height: '200px', position: 'relative' }}>
+            <iframe
+              src="https://maps.google.com/maps?q=319+Tr%E1%BA%A7n+Ph%C3%BA%2C+Th%E1%BA%A1ch+Linh%2C+th%C3%A0nh+ph%E1%BB%91+H%C3%A0+T%C4%A9nh%2C+H%C3%A0+T%C4%A9nh&t=&z=17&ie=UTF8&iwloc=&output=embed"
+              width="100%"
+              height="200"
+              style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) brightness(0.85) contrast(1.1)' }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Bản đồ Nhà Máy XS Plus"
+            />
+          </div>
+          <a
+            href="https://www.google.com/maps/dir/?api=1&destination=319+Tr%E1%BA%A7n+Ph%C3%BA%2C+Th%E1%BA%A1ch+Linh%2C+H%C3%A0+T%C4%A9nh"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center space-x-2 py-2.5 bg-white/5 hover:bg-brand-orange/20 border-t border-white/10 text-white/60 hover:text-brand-orange text-xs font-bold uppercase tracking-wider transition-all"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+            <span>Chỉ đường đến nhà máy</span>
+          </a>
+        </div>
+
         <div className="mt-8 flex flex-col md:flex-row justify-between items-center text-white/40 text-[12px]">
           <p>© 2026 TỔNG KHO NHỰA XS PLUS. All rights reserved.</p>
           <p className="mt-2 md:mt-0 font-display italic font-medium">= BỀN VỮNG CÙNG THỜI GIAN =</p>
@@ -233,6 +263,3 @@ export const Layout = ({ children }: { children: ReactNode }) => {
     </div>
   );
 };
-
-// Export constants for use in other components
-export { HOTLINE, HOTLINE_DISPLAY, ZALO_URL, EMAIL };

@@ -38,7 +38,7 @@ const Hero = ({ setQuoteOpen }: { setQuoteOpen: (v: boolean) => void }) => {
         <div className="absolute inset-0 bg-gradient-to-t from-brand-gray via-brand-gray/80 to-brand-gray/30 z-10" />
         <div className="absolute inset-0 bg-gradient-to-r from-brand-gray/90 via-transparent to-transparent z-10" />
         <img
-          src="https://caa.com.vn/wp-content/uploads/2023/12/Khu-lam-viec-VP-ket-hop-boi-duong-nghiep-vu-HK.jpg"
+          src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1920&q=80"
           alt="Dự án thực tế trần nhôm kiến trúc"
           className="w-full h-full object-cover object-center opacity-60 scale-105"
         />
@@ -67,9 +67,8 @@ const Hero = ({ setQuoteOpen }: { setQuoteOpen: (v: boolean) => void }) => {
             Cao cấp
           </h1>
 
-          <p className="text-white/80 text-base md:text-lg lg:text-xl font-medium mb-10 max-w-xl leading-relaxed drop-shadow-md">
-            Tổng kho phân phối chuyên nghiệp. Đáp ứng tiêu chuẩn khắt khe nhất
-            của Chủ Đầu Tư, Tổng Thầu và Thợ Thi Công.
+          <p className="text-white/80 text-base md:text-lg font-medium mb-6 max-w-xl leading-relaxed drop-shadow-md">
+            Nhà máy sản xuất trực tiếp tại Hà Tĩnh — <strong className="text-white">giá tận xưởng</strong>, giao hàng trong <strong className="text-brand-orange">24 giờ</strong>. Đáp ứng tiêu chuẩn khắt khe nhất của Chủ Đầu Tư, Tổng Thầu và KTS.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-4">
@@ -94,6 +93,26 @@ const Hero = ({ setQuoteOpen }: { setQuoteOpen: (v: boolean) => void }) => {
             </a>
           </div>
         </motion.div>
+
+        {/* USP Mini Badges */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.6 }}
+          className="mt-10 flex flex-wrap gap-3"
+        >
+          {[
+            { icon: <Truck size={13} />, text: 'Giao hàng 24H' },
+            { icon: <Factory size={13} />, text: 'Giá tận xưởng' },
+            { icon: <ShieldCheck size={13} />, text: 'Bảo hành 20 năm' },
+            { icon: <MapPin size={13} />, text: 'Nhà máy Hà Tĩnh' },
+          ].map((b, i) => (
+            <div key={i} className="flex items-center space-x-1.5 px-3 py-1.5 bg-white/10 backdrop-blur-sm border border-white/15 rounded-sm text-white/80 text-[11px] font-bold uppercase tracking-wider">
+              <span className="text-brand-orange">{b.icon}</span>
+              <span>{b.text}</span>
+            </div>
+          ))}
+        </motion.div>
       </div>
 
       {/* Scroll indicator */}
@@ -115,29 +134,70 @@ const Hero = ({ setQuoteOpen }: { setQuoteOpen: (v: boolean) => void }) => {
   );
 };
 
+const PartnerMarquee = () => {
+  const partners = [
+    "VINACONEX", "COTECCONS", "HOA BÌNH", "DELTA", "RICONS", "NEWTECONS", "FDC", "CENTRAL", "CC1", "UDIC"
+  ];
+  
+  // Duplicate array for seamless looping
+  const marqueeItems = [...partners, ...partners];
+
+  return (
+    <section className="py-12 bg-white border-b border-surface-dim overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 text-center">
+        <p className="text-xs font-bold text-brand-gray/40 uppercase tracking-widest">
+          Đối tác tin cậy của các Tổng thầu hàng đầu
+        </p>
+      </div>
+      <div className="relative flex whitespace-nowrap">
+        {/* Left gradient fade */}
+        <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-white to-transparent z-10"></div>
+        
+        <motion.div
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{ ease: "linear", duration: 30, repeat: Infinity }}
+          className="flex space-x-16 sm:space-x-24 items-center px-8"
+        >
+          {marqueeItems.map((partner, index) => (
+            <div 
+              key={index} 
+              className="text-2xl md:text-3xl font-display font-bold text-brand-gray/20 hover:text-brand-orange/60 transition-colors duration-300 cursor-default select-none"
+            >
+              {partner}
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Right gradient fade */}
+        <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-white to-transparent z-10"></div>
+      </div>
+    </section>
+  );
+};
+
 const ProductBento = () => {
   const products = [
     {
       title: "Hệ Caro (Cell)",
       desc: "Không gian mở, sáng tạo & phong cách.",
-      img: "https://caa.com.vn/wp-content/uploads/2022/08/tran-nhom-caro-100x100-1.jpg",
+      img: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80",
       colSpan: "md:col-span-2",
       rowSpan: "md:row-span-2",
     },
     {
       title: "Trần Lay-in",
       desc: "Tháo lắp linh hoạt, dễ dàng bảo trì.",
-      img: "https://caa.com.vn/wp-content/uploads/2023/07/IMG_4236.jpg",
+      img: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
     },
     {
       title: "Trần Clip-in",
       desc: "Hệ xương chìm, tối giản & đồng nhất.",
-      img: "https://caa.com.vn/wp-content/uploads/2023/12/112.png",
+      img: "https://images.unsplash.com/photo-1558441719-ff34b0524a24?auto=format&fit=crop&w=800&q=80",
     },
     {
       title: "Hệ U-Shaped",
       desc: "Hiệu ứng sọc dọc, chiều sâu ấn tượng.",
-      img: "https://caa.com.vn/wp-content/uploads/2023/04/TC-U-VG-6.jpg",
+      img: "https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=800&q=80",
       colSpan: "md:col-span-2",
     },
   ];
@@ -212,21 +272,19 @@ const FeaturedProjects = () => {
       name: "Trụ sở Công An Tỉnh Quảng Ninh",
       location: "Quảng Ninh",
       product: "Trần Caro Cell & Lam Chắn Nắng",
-      image: "https://caa.com.vn/wp-content/uploads/2025/10/Tru-so-CAQN.jpg",
+      image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80",
     },
     {
       name: "Cung Thiếu Nhi Hà Nội",
       location: "Hà Nội",
       product: "Trần Nhôm U Vân Gỗ",
-      image:
-        "https://caa.com.vn/wp-content/uploads/2024/05/z5460943062730_121b9890d23b0fc40a49afd843415b3a.jpg",
+      image: "https://images.unsplash.com/photo-1541123437800-1bb1317badc2?auto=format&fit=crop&w=800&q=80",
     },
     {
       name: "Trụ sở hành chính liên cơ quan",
       location: "Đà Nẵng",
       product: "Trần Nhôm Clip-in 600x600",
-      image:
-        "https://caa.com.vn/wp-content/uploads/2024/04/z5384832784816_94732766b14d573d3d64484bc4f7e776.jpg",
+      image: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80",
     },
   ];
 
@@ -396,21 +454,33 @@ const Testimonials = () => {
   const reviews = [
     {
       name: 'Anh Minh Tuấn',
-      role: 'Nhà thầu thi công, Nghệ An',
-      text: 'Giao hàng đúng hẹn, chất lượng nhôm tốt hơn hàng Trung Quốc nhiều. Hợp tác đã 2 năm, chưa có lần nào phải bảo hành.',
+      role: 'Nhà thầu thi công',
+      company: 'Công ty TNHH Xây Dựng Phước Thịnh',
+      location: 'Nghệ An',
+      text: 'Giao hàng đúng hẹn, chất lượng nhôm tốt hơn hàng Trung Quốc nhiều. Hợp tác đã 2 năm, chưa có lần nào phải bảo hành. Riêng năm 2025 đã nhập hơn 5,000m² cho các công trình tại Nghệ An.',
       stars: 5,
+      projects: 12,
+      avatar: 'MT',
     },
     {
       name: 'Chị Lan Anh',
-      role: 'Chủ đại lý vật liệu, Hà Tĩnh',
-      text: 'Chiết khấu tốt, có nhân viên kỹ thuật hỗ trợ bóc tách khối lượng. Đặc biệt là giao hàng trong tỉnh chỉ 1 ngày.',
+      role: 'Chủ đại lý vật liệu xây dựng',
+      company: 'Đại lý Vật liệu Hoàng Gia',
+      location: 'Hà Tĩnh',
+      text: 'Chiết khấu tốt, có nhân viên kỹ thuật hỗ trợ bóc tách khối lượng. Đặc biệt giao hàng trong tỉnh chỉ 1 ngày là lợi thế cực lớn. Khách hàng của tôi rất hài lòng với sản phẩm.',
       stars: 5,
+      projects: 8,
+      avatar: 'LA',
     },
     {
       name: 'KTS. Hoàng Phúc',
-      role: 'Kiến trúc sư, Đà Nẵng',
-      text: 'Thư viện file CAD đầy đủ, dễ tích hợp vào bản vẽ. Chất lượng lớp sơn tĩnh điện rất ổn định.',
+      role: 'Kiến trúc sư thiết kế nội thất',
+      company: 'Studio HP Architecture',
+      location: 'Đà Nẵng',
+      text: 'Thư viện file CAD đầy đủ, dễ tích hợp vào bản vẽ. Chất lượng lớp sơn tĩnh điện rất ổn định, màu sắc đồng nhất giữa các lô hàng. Đã chỉ định XS Plus cho 6 dự án văn phòng năm 2025.',
       stars: 5,
+      projects: 6,
+      avatar: 'HP',
     },
   ];
 
@@ -426,6 +496,7 @@ const Testimonials = () => {
           <h2 className="text-2xl md:text-3xl lg:text-4xl text-brand-gray tracking-tighter uppercase font-medium">
             Đối Tác Nói Gì Về XS Plus
           </h2>
+          <p className="text-brand-gray/50 mt-3 text-sm">Phản hồi thực tế từ nhà thầu, đại lý và kiến trúc sư đang hợp tác</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -436,17 +507,35 @@ const Testimonials = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15 }}
-              className="bento-card p-8 bg-white"
+              className="bento-card p-8 bg-white flex flex-col"
             >
+              {/* Stars */}
               <div className="flex space-x-1 mb-4">
                 {[...Array(r.stars)].map((_, j) => (
                   <Star key={j} size={16} className="text-brand-orange fill-brand-orange" />
                 ))}
               </div>
-              <p className="text-brand-gray/70 text-sm leading-relaxed italic mb-6">"{r.text}"</p>
-              <div className="border-t border-surface-dim pt-4">
-                <p className="font-bold text-brand-gray text-sm">{r.name}</p>
-                <p className="text-brand-gray/50 text-xs mt-0.5">{r.role}</p>
+
+              {/* Quote */}
+              <p className="text-brand-gray/70 text-sm leading-relaxed italic mb-6 flex-grow">"{r.text}"</p>
+
+              {/* Projects badge */}
+              <div className="flex items-center space-x-2 mb-5">
+                <span className="text-[10px] font-bold bg-brand-orange/10 text-brand-orange px-2 py-1 rounded uppercase tracking-wider">
+                  ✓ {r.projects} dự án hợp tác
+                </span>
+              </div>
+
+              {/* Author */}
+              <div className="border-t border-surface-dim pt-5 flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-full bg-brand-gray text-white flex items-center justify-center font-bold text-sm shrink-0">
+                  {r.avatar}
+                </div>
+                <div>
+                  <p className="font-bold text-brand-gray text-sm">{r.name}</p>
+                  <p className="text-brand-gray/50 text-xs mt-0.5">{r.role}</p>
+                  <p className="text-brand-orange text-[10px] font-bold mt-0.5 uppercase tracking-wide">{r.company} · {r.location}</p>
+                </div>
               </div>
             </motion.div>
           ))}
@@ -498,6 +587,88 @@ const CTABanner = ({ onQuoteClick }: { onQuoteClick: () => void }) => (
   </section>
 );
 
+const FAQSection = () => {
+  const faqs = [
+    {
+      q: 'Môt đơn tối thiểu là bao nhiêu mét vuông?',
+      a: 'XS Plus không có mức order tối thiểu cố định. Tuy nhiên, để được hưởng giá chiết khấu tốt nhất, thông thường đơn hàng từ 100m² trở lên. Liên hệ hotline để được tư vấn giá chính xác.',
+    },
+    {
+      q: 'Giao hàng trong 24 giờ áp dụng cho khu vực nào?',
+      a: 'Giao hàng 24 giờ áp dụng cho toàn bộ các tỉnh Miền Trung (Nghệ An, Hà Tĩnh, Quảng Bình, Quảng Trị, Thừa Thiên Huế, Đà Nẵng...). Các tỉnh Miền Bắc và Miền Nam giao trong 2–3 ngày qua đơn vị vận chuyển hợp tác.',
+    },
+    {
+      q: 'Trần nhôm XS Plus có những loại nào?',
+      a: 'Hai dòng chính: (1) Trần nhôm Clip-in (lắp khớp không tạo gửi, phổ biến cho văn phòng, thương mại) và (2) Trần nhôm Lay-in (lắp nằm trên xương, dễ thay thế). Ngoài ra có dòng Caro Cell đặc biệt cho công trình kiến trúc cao cấp.',
+    },
+    {
+      q: 'Có hỗ trợ lắp đặt không?',
+      a: 'XS Plus cung cấp vật tư và hướng dẫn kỹ thuật chi tiết. Đội ngũ kỹ thuật có thể tư vấn qua Zalo hoặc đến thực địa (khu vực Miền Trung). Với các dự án lớn, có thể phiếu cử thể hướng dẫn lắp đặt theo đươn hàng.',
+    },
+    {
+      q: 'Muốn có file CAD để làm bản vẽ thiết kế thì làm thế nào?',
+      a: 'Tải miễn phí tại trang Tài liệu Kỹ Thuật. Thư viện bao gồm file DWG/DXF các dòng sản phẩm chính, chi tiết cấu tạo lắp đặt, và bản vẽ mặt bằng mẫu. Đăng ký thông tin để mở khóa toàn bộ thư viện.',
+    },
+    {
+      q: 'Thời gian bảo hành là bao lâu?',
+      a: 'Bảo hành 10 năm cho tấm trần và 5 năm cho hệ xương. Đặc biệt cam kết không phai màu lớp sơn tĩnh điện trong 20 năm sử dụng trong nhà. Xem chi tiết tại trang Chính sách Bảo Hành.',
+    },
+  ];
+
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+
+  return (
+    <section className="py-24 bg-white">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <div className="flex items-center justify-center space-x-4 mb-4">
+            <div className="h-[1px] w-8 bg-brand-orange" />
+            <span className="text-brand-orange text-xs font-bold uppercase tracking-widest">FAQ</span>
+            <div className="h-[1px] w-8 bg-brand-orange" />
+          </div>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl text-brand-gray tracking-tighter uppercase font-medium">
+            Câu Hỏi Thường Gặp
+          </h2>
+          <p className="text-brand-gray/50 mt-3 text-sm">Giải đáp nhanh — còn thắc mắc, gọi Hotline ngay</p>
+        </div>
+
+        <div className="space-y-3">
+          {faqs.map((faq, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08 }}
+              className="border border-surface-dim rounded-xl overflow-hidden"
+            >
+              <button
+                onClick={() => setOpenIdx(openIdx === i ? null : i)}
+                className="w-full flex items-center justify-between p-5 text-left hover:bg-surface-bright transition-colors"
+              >
+                <span className="font-bold text-brand-gray text-sm pr-4">{faq.q}</span>
+                <span className={`text-brand-orange shrink-0 transition-transform duration-300 ${openIdx === i ? 'rotate-45' : ''}`}>
+                  <ArrowRight size={16} />
+                </span>
+              </button>
+              {openIdx === i && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="px-5 pb-5"
+                >
+                  <p className="text-brand-gray/70 text-sm leading-relaxed border-t border-surface-dim pt-4">{faq.a}</p>
+                </motion.div>
+              )}
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
 export const Home = () => {
   const [quoteOpen, setQuoteOpen] = useState(false);
 
@@ -506,10 +677,12 @@ export const Home = () => {
       <QuoteModal isOpen={quoteOpen} onClose={() => setQuoteOpen(false)} />
       <Hero setQuoteOpen={setQuoteOpen} />
       <Stats />
+      <PartnerMarquee />
       <ProductBento />
       <FeaturedProjects />
       <Advantages />
       <Testimonials />
+      <FAQSection />
       <CTABanner onQuoteClick={() => setQuoteOpen(true)} />
     </div>
   );

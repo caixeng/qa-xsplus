@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { FileText, Download, Lock, CheckCircle, Mail, Phone, User, Building, ExternalLink } from 'lucide-react';
 import { saveLead } from '../lib/supabase';
-import { HOTLINE, ZALO_URL } from '../components/Layout';
+import { HOTLINE, HOTLINE_DISPLAY, ZALO_URL } from '../components/Layout';
 
 const DOCUMENTS = [
   { id: 'cad-clipin', title: 'File AutoCAD Trần Clip-in 600x600', type: 'DWG / DXF', category: 'CAD' },
@@ -99,16 +99,21 @@ export const TechnicalHub = () => {
                 Bạn cần bản vẽ chi tiết cho giải pháp đặc thù hoặc yêu cầu mẫu vật liệu thực tế?
               </p>
               <a 
-                href="tel:0912345678" 
+                href={`tel:${HOTLINE}`} 
                 className="w-full py-3 bg-brand-gray text-white rounded flex items-center justify-center space-x-2 font-bold mb-3 hover:bg-brand-gray/90 transition-all"
               >
                 <Phone size={18} />
-                <span>0912.XXX.XXX</span>
+                <span>{HOTLINE_DISPLAY}</span>
               </a>
-              <button className="w-full py-3 bg-white text-brand-orange rounded flex items-center justify-center space-x-2 font-bold hover:bg-white/90 transition-all">
+              <a 
+                href={ZALO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3 bg-white text-brand-orange rounded flex items-center justify-center space-x-2 font-bold hover:bg-white/90 transition-all"
+              >
                 <ExternalLink size={18} />
                 <span>ZALO KỸ THUẬT</span>
-              </button>
+              </a>
             </div>
 
             <div className="bento-card p-6 bg-white border border-surface-dim/40 italic text-sm text-brand-gray/50">

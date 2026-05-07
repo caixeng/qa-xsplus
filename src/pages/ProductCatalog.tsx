@@ -1,16 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { Filter, Search, Grid, List as ListIcon, ChevronDown, Check, X, Shield, Settings, Ruler, Palette } from 'lucide-react';
-
-const PRODUCTS = [
-  { id: 1, name: 'Clip-in 600x600 Standard', category: 'Clip-in', thickness: '0.6mm', system: 'Hidden', perfor: 'Không đục lỗ', color: 'Trắng sứ', image: 'https://caa.com.vn/wp-content/uploads/2023/12/Khu-lam-viec-VP-ket-hop-boi-duong-nghiep-vu-HK.jpg' },
-  { id: 2, name: 'Lay-in 600x600 Acoustic', category: 'Lay-in', thickness: '0.7mm', system: 'Exposed', perfor: 'Đục lỗ Ø1.8', color: 'Trắng sứ', image: 'https://caa.com.vn/wp-content/uploads/2023/07/IMG_4236.jpg' },
-  { id: 3, name: 'Caro Cell 100x100 Wood', category: 'Caro', thickness: '0.5mm', system: 'Hidden', perfor: 'Không đục lỗ', color: 'Vân gỗ', image: 'https://caa.com.vn/wp-content/uploads/2022/08/tran-nhom-caro-100x100-1.jpg' },
-  { id: 4, name: 'U-Shaped 30x100 Premium', category: 'U-Shaped', thickness: '0.8mm', system: 'Hidden', perfor: 'Không đục lỗ', color: 'Đen nhám', image: 'https://caa.com.vn/wp-content/uploads/2023/04/TC-U-VG-6.jpg' },
-  { id: 5, name: 'Clip-in 600x600 Vân gỗ', category: 'Clip-in', thickness: '0.6mm', system: 'Hidden', perfor: 'Không đục lỗ', color: 'Vân gỗ', image: 'https://caa.com.vn/wp-content/uploads/2023/06/TC-BG-5.jpg' },
-  { id: 6, name: 'Caro Cell 150x150 Đen', category: 'Caro', thickness: '0.6mm', system: 'Hidden', perfor: 'Không đục lỗ', color: 'Đen nhám', image: 'https://caa.com.vn/wp-content/uploads/2022/08/z3578474025264_432ebb75d2bacba7864924efb51812fd.jpg' },
-];
+import { Filter, Search, Grid, List as ListIcon, ChevronDown, Check, X, Shield, Settings, Ruler, Palette, PackageX } from 'lucide-react';
+import { Skeleton } from '../components/Skeleton';
+import { getProducts } from '../utils/productsData';
+import { getProductImage } from '../utils/imageFallback';
 
 const FilterSection = ({ title, children, icon }: { title: string, children: React.ReactNode, icon: React.ReactNode }) => (
   <div className="mb-8">
@@ -38,11 +32,31 @@ const CheckboxFilter = ({ label, count, checked, onChange, ...props }: { label: 
 );
 
 export const ProductCatalog = () => {
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedThickness, setSelectedThickness] = useState<string[]>([]);
   const [selectedColor, setSelectedColor] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        setLoading(true);
+        // Simulate slightly longer loading for demoing skeletons
+        await new Promise(r => setTimeout(r, 600));
+
+        const data = await getProducts();
+        setProducts(data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProducts();
+  }, []);
 
   const toggleFilter = (list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>, val: string) => {
     if (list.includes(val)) {
@@ -52,7 +66,7 @@ export const ProductCatalog = () => {
     }
   };
 
-  const filteredProducts = PRODUCTS.filter(p => {
+  const filteredProducts = products.filter(p => {
     const categoryMatch = selectedCategories.length === 0 || selectedCategories.includes(p.category);
     const thicknessMatch = selectedThickness.length === 0 || selectedThickness.includes(p.thickness);
     const colorMatch = selectedColor.length === 0 || selectedColor.includes(p.color);
@@ -99,7 +113,7 @@ export const ProductCatalog = () => {
               </h3>
 
               <FilterSection title="Dòng sản phẩm" icon={<Settings size={14} />}>
-                {['Clip-in', 'Lay-in', 'Caro', 'U-Shaped'].map(cat => (
+                {['Clip-in', 'Lay-in', 'Caro', 'U-Shaped', 'Linear'].map(cat => (
                   <CheckboxFilter 
                     key={cat} 
                     label={cat} 
@@ -160,68 +174,114 @@ export const ProductCatalog = () => {
               </div>
             </div>
 
-            <div className={`grid ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6' : 'grid-cols-1 gap-4'}`}>
-              <AnimatePresence mode="popLayout">
-                {filteredProducts.map((p) => (
-                  <motion.div
-                    key={p.id}
-                    layout
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    className={`bento-card group flex ${viewMode === 'list' ? 'flex-row h-40' : 'flex-col'}`}
-                  >
-                    <div className={`relative overflow-hidden ${viewMode === 'list' ? 'w-48' : 'aspect-[4/3]'}`}>
-                      <img 
-                        src={p.image} 
-                        alt={p.name} 
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
-                      <div className="absolute top-3 left-3 flex flex-col space-y-2">
-                        <span className="bg-brand-gray/90 text-white text-[10px] font-bold px-2 py-0.5 rounded backdrop-blur-sm tracking-widest uppercase">{p.category}</span>
+            {loading ? (
+              <div className={`grid ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6' : 'grid-cols-1 gap-4'}`}>
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className={`bento-card flex ${viewMode === 'list' ? 'flex-row h-40' : 'flex-col h-[400px]'}`}>
+                    <Skeleton className={`${viewMode === 'list' ? 'w-48 h-full rounded-none' : 'h-1/2 w-full rounded-none'}`} />
+                    <div className="p-6 flex flex-col flex-grow gap-4">
+                      <Skeleton className="h-6 w-3/4" />
+                      <Skeleton className="h-4 w-1/2" />
+                      <div className="grid grid-cols-2 gap-2 mt-2">
+                        <Skeleton className="h-3 w-20" />
+                        <Skeleton className="h-3 w-20" />
+                        <Skeleton className="h-3 w-20" />
+                        <Skeleton className="h-3 w-20" />
+                      </div>
+                      <div className="mt-auto flex justify-between">
+                        <Skeleton className="h-4 w-24" />
+                        <Skeleton className="h-8 w-8 rounded-full" />
                       </div>
                     </div>
-
-                    <div className="p-6 flex flex-col flex-grow">
-                      <h3 className="text-lg font-bold mb-3 group-hover:text-brand-orange transition-colors">{p.name}</h3>
-                      
-                      <div className="grid grid-cols-2 gap-y-2 mb-6">
-                        <div className="flex items-center space-x-2">
-                          <Ruler size={12} className="text-brand-gray/30" />
-                          <span className="text-[11px] text-brand-gray/60">{p.thickness}</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Shield size={12} className="text-brand-gray/30" />
-                          <span className="text-[11px] text-brand-gray/60">{p.perfor}</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Palette size={12} className="text-brand-gray/30" />
-                          <span className="text-[11px] text-brand-gray/60">{p.color}</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Settings size={12} className="text-brand-gray/30" />
-                          <span className="text-[11px] text-brand-gray/60">Hệ {p.system}</span>
-                        </div>
-                      </div>
-
-                      <div className="mt-auto flex items-center justify-between">
-                        <Link to="#" className="text-xs font-bold text-brand-orange hover:underline uppercase tracking-widest">
-                          Yêu cầu báo giá
-                        </Link>
-                        <button className="bg-surface-bright p-2 rounded-full border border-surface-dim hover:bg-brand-orange hover:text-white transition-all text-brand-gray shadow-sm">
-                          <ChevronDown size={16} />
-                        </button>
-                      </div>
-                    </div>
-                  </motion.div>
+                  </div>
                 ))}
-              </AnimatePresence>
-            </div>
-            
-            {filteredProducts.length === 0 && (
-              <div className="py-24 text-center">
-                <p className="text-brand-gray/40 text-lg italic">Không tìm thấy sản phẩm phù hợp với bộ lọc.</p>
               </div>
+            ) : (
+              <div className={`grid ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6' : 'grid-cols-1 gap-4'}`}>
+                <AnimatePresence mode="popLayout">
+                  {filteredProducts.map((p) => (
+                    <motion.div
+                      key={p.id}
+                      layout
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      className={`bento-card group flex ${viewMode === 'list' ? 'flex-row h-40' : 'flex-col'}`}
+                    >
+                      <div className={`relative overflow-hidden ${viewMode === 'list' ? 'w-48' : 'aspect-[4/3]'}`}>
+                        <Link to={`/san-pham/${p.id}`}>
+                          <img 
+                            src={getProductImage(p)} 
+                            alt={p.name} 
+                            loading="lazy"
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = getProductImage(p);
+                            }}
+                          />
+                        </Link>
+                        <div className="absolute top-3 left-3 flex flex-col space-y-2">
+                          <span className="bg-brand-gray/90 text-white text-[10px] font-bold px-2 py-0.5 rounded backdrop-blur-sm tracking-widest uppercase">{p.category}</span>
+                        </div>
+                      </div>
+
+                      <div className="p-6 flex flex-col flex-grow">
+                        <Link to={`/san-pham/${p.id}`}>
+                          <h3 className="text-lg font-bold mb-3 group-hover:text-brand-orange transition-colors">{p.name}</h3>
+                        </Link>
+                        
+                        <div className="grid grid-cols-2 gap-y-2 mb-6">
+                          <div className="flex items-center space-x-2">
+                            <Ruler size={12} className="text-brand-gray/30" />
+                            <span className="text-[11px] text-brand-gray/60">{p.thickness}</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Shield size={12} className="text-brand-gray/30" />
+                            <span className="text-[11px] text-brand-gray/60">{p.perfor}</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Palette size={12} className="text-brand-gray/30" />
+                            <span className="text-[11px] text-brand-gray/60">{p.color}</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Settings size={12} className="text-brand-gray/30" />
+                            <span className="text-[11px] text-brand-gray/60">Hệ {p.system_type}</span>
+                          </div>
+                        </div>
+
+                        <div className="mt-auto flex items-center justify-between">
+                          <Link to={`/san-pham/${p.id}`} className="text-xs font-bold text-brand-orange hover:underline uppercase tracking-widest">
+                            Chi tiết & Báo giá
+                          </Link>
+                          <Link to={`/san-pham/${p.id}`} className="bg-surface-bright p-2 rounded-full border border-surface-dim hover:bg-brand-orange hover:text-white transition-all text-brand-gray shadow-sm">
+                            <ChevronDown size={16} className="-rotate-90" />
+                          </Link>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            )}
+            
+            {!loading && filteredProducts.length === 0 && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="py-24 flex flex-col items-center text-center"
+              >
+                <div className="w-20 h-20 bg-surface-dim/30 rounded-full flex items-center justify-center mb-6 text-brand-gray/30">
+                  <PackageX size={32} />
+                </div>
+                <h3 className="text-xl font-display font-bold text-brand-gray mb-2">Không có sản phẩm nào</h3>
+                <p className="text-brand-gray/50 max-w-sm">Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm để xem các sản phẩm trần nhôm khác.</p>
+                <button 
+                  onClick={() => { setSelectedCategories([]); setSelectedThickness([]); setSelectedColor([]); setSearchQuery('') }}
+                  className="mt-6 btn-secondary"
+                >
+                  Xóa bộ lọc
+                </button>
+              </motion.div>
             )}
           </div>
         </div>

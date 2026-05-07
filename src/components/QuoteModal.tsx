@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, Phone, MessageCircle, Send, ChevronDown, CheckCircle2 } from 'lucide-react';
 import { HOTLINE, HOTLINE_DISPLAY, ZALO_URL } from './Layout';
 import { saveLead } from '../lib/supabase';
+import { trackLead } from './Tracking';
 
 interface QuoteFormData {
   name: string;
@@ -41,6 +42,7 @@ export const QuoteModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =
       });
 
       setSubmitted(true);
+      trackLead('quote_modal');
 
       // Pre-filled Zalo message
       const msg = encodeURIComponent(
