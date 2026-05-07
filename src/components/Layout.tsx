@@ -83,6 +83,7 @@ const Navbar = () => {
                   src="/logo.png"
                   alt="XS PLUS"
                   className={`transition-all duration-500 object-contain ${scrolled ? 'h-14' : 'h-16 sm:h-20'}`}
+                  style={{ filter: 'hue-rotate(90deg)' }}
                 />
               </div>
               <div className="flex flex-col">

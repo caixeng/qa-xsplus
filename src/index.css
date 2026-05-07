@@ -5,9 +5,10 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Space Grotesk", sans-serif;
 
-  --color-brand-orange: #FF6600;
-  --color-brand-orange-hover: #e65c00;
-  --color-brand-orange-light: #fff0e6;
+  /* Công Trình Xanh — Green Primary Palette */
+  --color-brand-orange: #16a34a;          /* Green-600 — màu chủ đạo */
+  --color-brand-orange-hover: #15803d;    /* Green-700 — hover state */
+  --color-brand-orange-light: #f0fdf4;    /* Green-50  — nền nhẹ */
   --color-brand-gray: #1a1c1c;
   --color-brand-gray-light: #2a2d2d;
   --color-surface-dim: #dadada;
