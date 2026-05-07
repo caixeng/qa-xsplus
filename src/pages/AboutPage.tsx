@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSEO } from '../hooks/useSEO';
 import { motion } from 'motion/react';
 import { Factory, Users, Award, MapPin, Phone, MessageCircle, CheckCircle2, TrendingUp, Globe, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -17,6 +18,11 @@ const TimelineItem = ({ year, title, desc, isRight }: { year: string; title: str
 );
 
 export const AboutPage = () => {
+  useSEO({
+    title: 'Về XS Plus | Nhà Máy Trần Nhôm Hà Tĩnh',
+    description: 'Câu chuyện thương hiệu XS Plus — nhà máy sản xuất trần nhôm kiến trúc cao cấp tại Hà Tĩnh. Hơn 500 dự án, đối tác của các Tổng thầu hàng đầu Việt Nam.',
+    canonical: 'https://xsplus.vn/gioi-thieu',
+  });
   const values = [
     {
       icon: <Factory size={24} />,
@@ -155,7 +161,9 @@ export const AboutPage = () => {
                 { year: '2024', title: 'Bứt phá 10 tỷ đầu tư', desc: 'Đầu tư thêm máy dập CNC và máy sơn tĩnh điện thế hệ mới trị giá 10 tỷ đồng. Năng suất tăng 3 lần.', isRight: true },
                 { year: '2025', title: '500+ dự án hoàn thành', desc: 'Cột mốc 500 dự án từ Bắc vào Nam. Ra mắt hệ thống đại lý online và công cụ bóc tách tự động.', isRight: false },
               ].map(({ year, title, desc, isRight }, i) => (
-                <TimelineItem key={i} year={year} title={title} desc={desc} isRight={isRight} />
+                <React.Fragment key={i}>
+                  <TimelineItem year={year} title={title} desc={desc} isRight={isRight} />
+                </React.Fragment>
               ))}
             </div>
           </div>

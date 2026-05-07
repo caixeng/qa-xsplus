@@ -1,12 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { MessageSquare, X, Send, Bot, User, Loader2 } from 'lucide-react';
-import { GoogleGenAI } from '@google/genai';
+import { supabase } from '../lib/supabase';
+import { trackAIChatOpened } from './Tracking';
 
 interface Message {
   role: 'user' | 'model' | 'system';
   content: string;
 }
+
+const MAX_MESSAGES = 20;
 
 export const AIChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,7 +19,8 @@ export const AIChatWidget = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [systemContext, setSystemContext] = useState('');
-  
+  const [lastSentAt, setLastSentAt] = useState(0);
+
   const suggestions = [
     "Báo giá trần nhôm?",
     "Các loại trần nhôm XS Plus?",
@@ -26,11 +30,10 @@ export const AIChatWidget = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Fetch technical specs to use as system prompt
     fetch('/XS_Plus_Technical_Specs.md')
       .then(res => res.text())
       .then(text => setSystemContext(text))
-      .catch(err => console.error('Failed to load system specs', err));
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -39,55 +42,45 @@ export const AIChatWidget = () => {
     }
   }, [messages, isOpen]);
 
-  const handleSend = async () => {
+  const handleSend = () => {
     if (!input.trim()) return;
-
-    const userMsg = input.trim();
-    sendMessage(userMsg);
+    sendMessage(input.trim());
   };
 
   const sendMessage = async (text: string) => {
+    // Rate limit: 1 giây giữa các tin
+    const now = Date.now();
+    if (now - lastSentAt < 1000) return;
+    setLastSentAt(now);
+
+    // Max messages guard
+    const userMsgCount = messages.filter(m => m.role === 'user').length;
+    if (userMsgCount >= MAX_MESSAGES) {
+      setMessages(prev => [...prev, {
+        role: 'model',
+        content: 'Phiên chat đã đạt giới hạn. Vui lòng gọi Hotline **0378 226 269** hoặc nhắn Zalo để được hỗ trợ tiếp nhé! 📞'
+      }]);
+      return;
+    }
+
     setInput('');
-    setMessages(prev => [...prev, { role: 'user', content: text }]);
+    const updatedMessages: Message[] = [...messages, { role: 'user', content: text }];
+    setMessages(updatedMessages);
     setIsLoading(true);
 
     try {
-      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      if (!apiKey) {
-        setMessages(prev => [...prev, { role: 'model', content: 'Hệ thống AI đang được bảo trì (Thiếu API Key). Vui lòng gọi Hotline 0378 226 269 để được hỗ trợ.' }]);
-        setIsLoading(false);
-        return;
-      }
-
-      // We use fetch directly to Gemini API since the official SDK might have browser restrictions or different syntax
-      // that requires dangerouslyAllowBrowser. Using REST API is safer for client-side drop-in.
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: {
-            parts: [{ text: `Bạn là nhân viên tư vấn bán hàng của nhà máy trần nhôm XS Plus. Dưới đây là kiến thức sản phẩm của bạn:\n\n${systemContext}\n\nQuy tắc trả lời:\n1. Luôn lịch sự, chuyên nghiệp, xưng em gọi anh/chị.\n2. Trả lời ngắn gọn, đúng trọng tâm câu hỏi.\n3. Nếu khách hỏi giá, báo giá tham khảo và chủ động xin Số Điện Thoại/Zalo để bộ phận kinh doanh liên hệ gửi báo giá chi tiết.\n4. Tuyệt đối không bịa đặt thông tin ngoài tài liệu được cung cấp.\n5. SỬ DỤNG ĐỊNH DẠNG: Dùng Markdown (**đậm**) cho thông số quan trọng, dùng bullet points khi liệt kê, và thêm emoji phù hợp (như 🏗️, ✅, 📞) để câu trả lời sinh động, dễ đọc.` }]
-          },
-          contents: [
-            ...messages.filter(m => m.role !== 'system').map(m => ({
-              role: m.role,
-              parts: [{ text: m.content }]
-            })),
-            { role: 'user', parts: [{ text: text }] }
-          ]
-        })
+      const { data, error } = await supabase.functions.invoke('ai-chat', {
+        body: { messages: updatedMessages, systemContext },
       });
 
-      const data = await response.json();
-      
-      if (data.candidates && data.candidates[0].content.parts[0].text) {
-        setMessages(prev => [...prev, { role: 'model', content: data.candidates[0].content.parts[0].text }]);
-      } else {
-        throw new Error('Invalid response from AI');
-      }
-    } catch (error) {
-      console.error(error);
-      setMessages(prev => [...prev, { role: 'model', content: 'Xin lỗi, hệ thống đang bận. Anh/chị vui lòng để lại số điện thoại hoặc gọi Hotline nhé!' }]);
+      if (error) throw error;
+
+      setMessages(prev => [...prev, { role: 'model', content: data.text }]);
+    } catch {
+      setMessages(prev => [...prev, {
+        role: 'model',
+        content: 'Xin lỗi, hệ thống đang bận. Anh/chị vui lòng để lại số điện thoại hoặc gọi Hotline nhé!'
+      }]);
     } finally {
       setIsLoading(false);
     }
@@ -102,11 +95,10 @@ export const AIChatWidget = () => {
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            onClick={() => setIsOpen(true)}
+            onClick={() => { setIsOpen(true); trackAIChatOpened(); }}
             className="fixed bottom-6 left-6 w-14 h-14 bg-brand-gray text-white rounded-full shadow-2xl flex items-center justify-center hover:bg-brand-orange transition-colors z-50 group border border-white/10"
           >
             <Bot size={24} className="group-hover:scale-110 transition-transform" />
-            {/* Notification Badge */}
             <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-surface-bright animate-pulse"></span>
           </motion.button>
         )}
@@ -135,7 +127,7 @@ export const AIChatWidget = () => {
                   </p>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => setIsOpen(false)}
                 className="text-white/70 hover:text-white transition-colors"
               >
@@ -184,7 +176,6 @@ export const AIChatWidget = () => {
 
             {/* Input */}
             <div className="p-4 bg-white border-t border-surface-dim">
-              {/* Quick Suggestions */}
               {messages.length < 3 && (
                 <div className="flex flex-wrap gap-2 mb-3">
                   {suggestions.map((s, i) => (
@@ -198,7 +189,7 @@ export const AIChatWidget = () => {
                   ))}
                 </div>
               )}
-              <form 
+              <form
                 onSubmit={(e) => { e.preventDefault(); handleSend(); }}
                 className="flex items-center relative"
               >
@@ -209,7 +200,7 @@ export const AIChatWidget = () => {
                   placeholder="Nhập câu hỏi (Ví dụ: Trần clip-in dày bao nhiêu?)"
                   className="flex-1 pl-4 pr-12 py-3 bg-surface-bright border border-surface-dim rounded-full text-sm focus:outline-none focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition-all"
                 />
-                <button 
+                <button
                   type="submit"
                   disabled={!input.trim() || isLoading}
                   className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-brand-orange text-white rounded-full flex items-center justify-center disabled:opacity-50 hover:bg-brand-orange/90 transition-colors"

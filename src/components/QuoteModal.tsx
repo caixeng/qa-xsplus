@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, Phone, MessageCircle, Send, ChevronDown, CheckCircle2 } from 'lucide-react';
 import { HOTLINE, HOTLINE_DISPLAY, ZALO_URL } from './Layout';
 import { saveLead } from '../lib/supabase';
-import { trackLead } from './Tracking';
+import { trackLead, trackOpenQuoteModal } from './Tracking';
 
 interface QuoteFormData {
   name: string;
@@ -21,10 +21,17 @@ const PRODUCTS = [
   'Chưa xác định, cần tư vấn',
 ];
 
-export const QuoteModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+export const QuoteModal = ({ isOpen, onClose, source = 'quote_modal' }: { isOpen: boolean; onClose: () => void; source?: string }) => {
   const [form, setForm] = useState<QuoteFormData>({ name: '', phone: '', product: '', area: '', note: '' });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Track modal open
+  const prevOpen = React.useRef(false);
+  React.useEffect(() => {
+    if (isOpen && !prevOpen.current) trackOpenQuoteModal(source);
+    prevOpen.current = isOpen;
+  }, [isOpen, source]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

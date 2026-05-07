@@ -16,7 +16,8 @@ import {
 } from "lucide-react";
 import { useRef } from "react";
 import { QuoteModal } from "../components/QuoteModal";
-import { ZALO_URL, HOTLINE_DISPLAY } from "../components/Layout";
+import { ZALO_URL, HOTLINE_DISPLAY, HOTLINE } from "../components/Layout";
+import { useSEO } from "../hooks/useSEO";
 
 const Hero = ({ setQuoteOpen }: { setQuoteOpen: (v: boolean) => void }) => {
   const containerRef = useRef(null);
@@ -41,10 +42,11 @@ const Hero = ({ setQuoteOpen }: { setQuoteOpen: (v: boolean) => void }) => {
           src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1920&q=80"
           alt="Dự án thực tế trần nhôm kiến trúc"
           className="w-full h-full object-cover object-center opacity-60 scale-105"
+          fetchPriority="high"
         />
       </motion.div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 w-full pt-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 w-full pt-20 flex flex-col items-start md:items-center md:text-center lg:items-start lg:text-left">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -58,7 +60,7 @@ const Hero = ({ setQuoteOpen }: { setQuoteOpen: (v: boolean) => void }) => {
             </span>
           </div>
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl text-white leading-[1.1] md:leading-[1.1] font-display tracking-tighter uppercase mb-6 drop-shadow-lg">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-white leading-[1.1] md:leading-[1.1] font-display tracking-tighter uppercase mb-6 drop-shadow-lg">
             Giải pháp <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-amber-500 italic drop-shadow-none pr-2">
               Trần Nhôm
@@ -67,14 +69,14 @@ const Hero = ({ setQuoteOpen }: { setQuoteOpen: (v: boolean) => void }) => {
             Cao cấp
           </h1>
 
-          <p className="text-white/80 text-base md:text-lg font-medium mb-6 max-w-xl leading-relaxed drop-shadow-md">
+          <p className="text-white/80 text-base md:text-lg lg:text-xl font-medium mb-8 max-w-xl md:max-w-2xl lg:max-w-xl leading-relaxed drop-shadow-md">
             Nhà máy sản xuất trực tiếp tại Hà Tĩnh — <strong className="text-white">giá tận xưởng</strong>, giao hàng trong <strong className="text-brand-orange">24 giờ</strong>. Đáp ứng tiêu chuẩn khắt khe nhất của Chủ Đầu Tư, Tổng Thầu và KTS.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center gap-4 md:justify-center lg:justify-start">
             <button
               onClick={() => setQuoteOpen(true)}
-              className="w-full sm:w-auto px-8 py-4 bg-brand-orange text-white font-bold rounded-sm flex items-center justify-center hover:bg-white hover:text-brand-orange transition-all duration-300 group uppercase tracking-wider text-xs"
+              className="w-full sm:w-auto px-10 py-5 bg-brand-orange text-white font-bold rounded-sm flex items-center justify-center hover:bg-white hover:text-brand-orange transition-all duration-300 group uppercase tracking-wider text-xs shadow-xl shadow-brand-orange/20"
             >
               Nhận Báo Giá Miễn Phí
               <ArrowRight
@@ -86,7 +88,7 @@ const Hero = ({ setQuoteOpen }: { setQuoteOpen: (v: boolean) => void }) => {
               href={ZALO_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-auto px-8 py-4 bg-transparent border border-white/30 text-white font-bold rounded-sm flex items-center justify-center hover:bg-white/10 transition-all duration-300 uppercase tracking-wider text-xs space-x-2"
+              className="w-full sm:w-auto px-10 py-5 bg-transparent border border-white/30 text-white font-bold rounded-sm flex items-center justify-center hover:bg-white/10 transition-all duration-300 uppercase tracking-wider text-xs space-x-2"
             >
               <MessageCircle size={16} />
               <span>Tư vấn qua Zalo</span>
@@ -99,15 +101,15 @@ const Hero = ({ setQuoteOpen }: { setQuoteOpen: (v: boolean) => void }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.6 }}
-          className="mt-10 flex flex-wrap gap-3"
+          className="mt-12 flex flex-wrap gap-3 md:justify-center lg:justify-start"
         >
           {[
             { icon: <Truck size={13} />, text: 'Giao hàng 24H' },
             { icon: <Factory size={13} />, text: 'Giá tận xưởng' },
-            { icon: <ShieldCheck size={13} />, text: 'Bảo hành 20 năm' },
+            { icon: <ShieldCheck size={13} />, text: 'Bảo hành 10 năm' },
             { icon: <MapPin size={13} />, text: 'Nhà máy Hà Tĩnh' },
           ].map((b, i) => (
-            <div key={i} className="flex items-center space-x-1.5 px-3 py-1.5 bg-white/10 backdrop-blur-sm border border-white/15 rounded-sm text-white/80 text-[11px] font-bold uppercase tracking-wider">
+            <div key={i} className="flex items-center space-x-1.5 px-3 py-1.5 bg-white/10 backdrop-blur-sm border border-white/15 rounded-sm text-white/80 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">
               <span className="text-brand-orange">{b.icon}</span>
               <span>{b.text}</span>
             </div>
@@ -229,7 +231,7 @@ const ProductBento = () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[300px]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[250px] sm:auto-rows-[300px]">
           {products.map((p, i) => (
             <Link
               to="/catalog"
@@ -240,16 +242,17 @@ const ProductBento = () => {
                 src={p.img}
                 alt={p.title}
                 className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 group-hover:opacity-50 transition-all duration-700 ease-out"
+                loading="lazy"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
 
-              <div className="absolute bottom-0 left-0 p-8 w-full">
+              <div className="absolute bottom-0 left-0 p-6 sm:p-8 w-full">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-lg md:text-xl font-bold text-white mb-2 uppercase tracking-tight">
                       {p.title}
                     </h3>
-                    <p className="text-white/70 text-sm hidden sm:block">
+                    <p className="text-white/70 text-xs sm:text-sm hidden sm:block line-clamp-1">
                       {p.desc}
                     </p>
                   </div>
@@ -305,24 +308,25 @@ const FeaturedProjects = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map((project, idx) => (
             <div key={idx} className="group relative">
-              <div className="relative h-80 w-full overflow-hidden rounded mb-6 bg-surface-dim">
+              <div className="relative h-64 sm:h-80 w-full overflow-hidden rounded mb-6 bg-surface-dim">
                 <img
                   src={project.image}
                   alt={project.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                  loading="lazy"
                 />
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur text-brand-gray px-3 py-1.5 text-xs font-bold uppercase tracking-wide rounded-sm flex items-center">
+                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur text-brand-gray px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide rounded-sm flex items-center">
                   <Building2 size={14} className="mr-2 text-brand-orange" />
                   {project.product}
                 </div>
               </div>
-              <h3 className="text-lg font-bold text-brand-gray mb-2 line-clamp-1 group-hover:text-brand-orange transition-colors">
+              <h3 className="text-base sm:text-lg font-bold text-brand-gray mb-2 line-clamp-1 group-hover:text-brand-orange transition-colors">
                 {project.name}
               </h3>
-              <div className="flex items-center text-brand-gray/60 text-sm">
+              <div className="flex items-center text-brand-gray/60 text-xs sm:text-sm">
                 <MapPin size={16} className="mr-1" />
                 {project.location}
               </div>
@@ -351,7 +355,7 @@ const Advantages = () => {
     {
       num: "03",
       title: "Tiêu chuẩn dự án",
-      desc: "Vật liệu tĩnh điện cao cấp, độ ổn định cực cao. Tuổi thọ lên đến 50 năm không han gỉ.",
+      desc: "Vật liệu nhôm anodize cao cấp, độ ổn định cực cao. Bảo hành 10 năm cho tấm trần, cam kết không phai màu sơn tĩnh điện 20 năm.",
       icon: <ShieldCheck size={24} />,
     },
     {
@@ -386,7 +390,7 @@ const Advantages = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
           {items.map((item, i) => (
             <div
               key={i}
@@ -401,10 +405,10 @@ const Advantages = () => {
                 <div className="text-white bg-white/10 backdrop-blur w-12 h-12 flex items-center justify-center rounded-sm group-hover:bg-brand-orange transition-colors duration-300">
                   {item.icon}
                 </div>
-                <h3 className="text-xl font-bold tracking-tight uppercase">
+                <h3 className="text-lg sm:text-xl font-bold tracking-tight uppercase">
                   {item.title}
                 </h3>
-                <p className="text-white/60 text-sm leading-relaxed">
+                <p className="text-white/60 text-xs sm:text-sm leading-relaxed">
                   {item.desc}
                 </p>
               </div>
@@ -421,7 +425,7 @@ const Stats = () => {
     { num: '4', unit: 'Máy', label: 'Dây chuyền sản xuất hiện đại' },
     { num: '10', unit: 'Tỷ', label: 'Đầu tư thiết bị 2024' },
     { num: '500+', unit: 'Dự án', label: 'Đã hoàn thành toàn quốc' },
-    { num: '20', unit: 'Năm', label: 'Bảo hành sản phẩm' },
+    { num: '20', unit: 'Năm', label: 'Không phai màu sơn tĩnh điện' },
   ];
 
   return (
@@ -499,7 +503,7 @@ const Testimonials = () => {
           <p className="text-brand-gray/50 mt-3 text-sm">Phản hồi thực tế từ nhà thầu, đại lý và kiến trúc sư đang hợp tác</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {reviews.map((r, i) => (
             <motion.div
               key={i}
@@ -507,34 +511,34 @@ const Testimonials = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15 }}
-              className="bento-card p-8 bg-white flex flex-col"
+              className="bento-card p-6 sm:p-8 bg-white flex flex-col"
             >
               {/* Stars */}
               <div className="flex space-x-1 mb-4">
                 {[...Array(r.stars)].map((_, j) => (
-                  <Star key={j} size={16} className="text-brand-orange fill-brand-orange" />
+                  <Star key={j} size={14} className="text-brand-orange fill-brand-orange" />
                 ))}
               </div>
 
               {/* Quote */}
-              <p className="text-brand-gray/70 text-sm leading-relaxed italic mb-6 flex-grow">"{r.text}"</p>
+              <p className="text-brand-gray/70 text-xs sm:text-sm leading-relaxed italic mb-6 flex-grow">"{r.text}"</p>
 
               {/* Projects badge */}
               <div className="flex items-center space-x-2 mb-5">
-                <span className="text-[10px] font-bold bg-brand-orange/10 text-brand-orange px-2 py-1 rounded uppercase tracking-wider">
+                <span className="text-[9px] sm:text-[10px] font-bold bg-brand-orange/10 text-brand-orange px-2 py-1 rounded uppercase tracking-wider">
                   ✓ {r.projects} dự án hợp tác
                 </span>
               </div>
 
               {/* Author */}
               <div className="border-t border-surface-dim pt-5 flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-full bg-brand-gray text-white flex items-center justify-center font-bold text-sm shrink-0">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-brand-gray text-white flex items-center justify-center font-bold text-xs sm:text-sm shrink-0">
                   {r.avatar}
                 </div>
                 <div>
-                  <p className="font-bold text-brand-gray text-sm">{r.name}</p>
-                  <p className="text-brand-gray/50 text-xs mt-0.5">{r.role}</p>
-                  <p className="text-brand-orange text-[10px] font-bold mt-0.5 uppercase tracking-wide">{r.company} · {r.location}</p>
+                  <p className="font-bold text-brand-gray text-xs sm:text-sm">{r.name}</p>
+                  <p className="text-brand-gray/50 text-[10px] sm:text-xs mt-0.5">{r.role}</p>
+                  <p className="text-brand-orange text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-wide">{r.company} · {r.location}</p>
                 </div>
               </div>
             </motion.div>
@@ -575,7 +579,7 @@ const CTABanner = ({ onQuoteClick }: { onQuoteClick: () => void }) => (
             <ArrowRight size={18} />
           </button>
           <a
-            href={`tel:${HOTLINE_DISPLAY.replace(/\s/g, '')}`}
+            href={`tel:${HOTLINE}`}
             className="px-10 py-5 bg-white/10 border border-white/20 text-white font-bold rounded-lg hover:bg-white/20 transition-all duration-300 uppercase tracking-wider text-sm flex items-center justify-center space-x-2"
           >
             <Phone size={18} />
@@ -590,7 +594,7 @@ const CTABanner = ({ onQuoteClick }: { onQuoteClick: () => void }) => (
 const FAQSection = () => {
   const faqs = [
     {
-      q: 'Môt đơn tối thiểu là bao nhiêu mét vuông?',
+      q: 'Một đơn tối thiểu là bao nhiêu mét vuông?',
       a: 'XS Plus không có mức order tối thiểu cố định. Tuy nhiên, để được hưởng giá chiết khấu tốt nhất, thông thường đơn hàng từ 100m² trở lên. Liên hệ hotline để được tư vấn giá chính xác.',
     },
     {
@@ -603,7 +607,7 @@ const FAQSection = () => {
     },
     {
       q: 'Có hỗ trợ lắp đặt không?',
-      a: 'XS Plus cung cấp vật tư và hướng dẫn kỹ thuật chi tiết. Đội ngũ kỹ thuật có thể tư vấn qua Zalo hoặc đến thực địa (khu vực Miền Trung). Với các dự án lớn, có thể phiếu cử thể hướng dẫn lắp đặt theo đươn hàng.',
+      a: 'XS Plus cung cấp vật tư và hướng dẫn kỹ thuật chi tiết. Đội ngũ kỹ thuật có thể tư vấn qua Zalo hoặc đến thực địa (khu vực Miền Trung). Với các dự án lớn, có thể cử kỹ thuật viên hướng dẫn lắp đặt trực tiếp theo đơn hàng.',
     },
     {
       q: 'Muốn có file CAD để làm bản vẽ thiết kế thì làm thế nào?',
@@ -671,6 +675,11 @@ const FAQSection = () => {
 
 export const Home = () => {
   const [quoteOpen, setQuoteOpen] = useState(false);
+  useSEO({
+    title: 'Trần Nhôm XS Plus | Nhà Máy Sản Xuất Tại Hà Tĩnh',
+    description: 'Nhà máy sản xuất trần nhôm kiến trúc cao cấp tại Hà Tĩnh. Clip-in, Lay-in, Caro Cell, U-Shaped. Giao hàng Miền Trung 24h, bảo hành 10 năm.',
+    canonical: 'https://xsplus.vn',
+  });
 
   return (
     <div className="bg-surface-bright">

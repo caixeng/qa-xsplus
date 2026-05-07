@@ -15,8 +15,6 @@ export const FloatingContact = () => {
     const timer = setTimeout(() => setVisible(true), 3000);
     const onScroll = () => {
       setShowScrollTop(window.scrollY > 500);
-      // Auto-expand on first appear
-      if (window.scrollY > 200 && !expanded) setExpanded(false);
     };
     window.addEventListener('scroll', onScroll);
     return () => { clearTimeout(timer); window.removeEventListener('scroll', onScroll); };

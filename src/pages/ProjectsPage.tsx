@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSEO } from '../hooks/useSEO';
 import { motion, AnimatePresence } from 'motion/react';
 import { MapPin, Calendar, Ruler, ArrowRight, Building2, Phone, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -109,6 +110,11 @@ const PROJECTS = [
 const TYPES = ['Tất cả', 'Giáo dục', 'Văn phòng', 'Thương mại', 'Khách sạn', 'Y tế', 'Dân dụng', 'Công nghiệp', 'Hành chính'];
 
 export const ProjectsPage = () => {
+  useSEO({
+    title: 'Dự Án Trần Nhôm Tiêu Biểu | Trường học, Bệnh viện, Văn phòng',
+    description: 'Danh sách công trình đã triển khai trần nhôm XS Plus trên toàn quốc: trường học, bệnh viện, trung tâm thương mại, cơ quan hành chính. Xem ảnh thực tế.',
+    canonical: 'https://xsplus.vn/du-an',
+  });
   const [activeType, setActiveType] = useState('Tất cả');
   const [selected, setSelected] = useState<typeof PROJECTS[0] | null>(null);
 

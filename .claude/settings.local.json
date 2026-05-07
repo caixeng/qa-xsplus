@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh pr *)",
+      "Bash(npx tsc *)",
+      "Bash(supabase --version)",
+      "Bash(where supabase *)",
+      "Bash(Select-String \"project_id\")",
+      "PowerShell(Get-ChildItem \"D:\\\\QuocAnh\\\\2026\\\\01.Project\\\\qa-xsplus\\\\supabase\" -Recurse -Force -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName })",
+      "mcp__06943db5-fde1-4f16-900c-8e37176eebb6__deploy_edge_function",
+      "PowerShell(winget install Supabase.CLI --accept-package-agreements --accept-source-agreements 2>&1)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "mcp__06943db5-fde1-4f16-900c-8e37176eebb6__get_logs"
+    ]
+  }
+}

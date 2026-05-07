@@ -13,9 +13,7 @@ declare global {
 /** Gửi một sự kiện tùy chỉnh lên GA4 + Meta Pixel — dùng từ bất kỳ component nào */
 export const trackEvent = (action: string, params?: Record<string, unknown>) => {
   if (typeof window === 'undefined') return;
-  // GA4
   window.gtag?.('event', action, params);
-  // Meta Pixel
   window.fbq?.('trackCustom', action, params);
 };
 
@@ -23,6 +21,33 @@ export const trackEvent = (action: string, params?: Record<string, unknown>) => 
 export const trackLead = (source: string) => {
   window.gtag?.('event', 'generate_lead', { source });
   window.fbq?.('track', 'Lead', { source });
+};
+
+/** Track xem sản phẩm */
+export const trackViewProduct = (productId: string, productName: string) => {
+  trackEvent('view_item', { item_id: productId, item_name: productName, item_category: 'Trần Nhôm' });
+};
+
+/** Track mở Quote Modal */
+export const trackOpenQuoteModal = (source: string) => {
+  trackEvent('open_quote_modal', { source });
+  window.fbq?.('track', 'InitiateCheckout', { source });
+};
+
+/** Track dùng Calculator */
+export const trackCalculatorUsed = (areM2: number, productType: string) => {
+  trackEvent('calculator_used', { area_m2: areM2, product_type: productType });
+};
+
+/** Track mở AI Chat */
+export const trackAIChatOpened = () => {
+  trackEvent('ai_chat_opened');
+};
+
+/** Track mở Zalo */
+export const trackZaloClick = (source: string) => {
+  trackEvent('zalo_click', { source });
+  window.fbq?.('track', 'Contact', { method: 'zalo', source });
 };
 
 // ─── Main Tracking Component ───────────────────────────────────────────────

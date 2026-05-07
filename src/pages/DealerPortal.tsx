@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
+import { useSEO } from '../hooks/useSEO';
 import { motion } from 'motion/react';
 import { Phone, Building2, LayoutDashboard, Package, History, Settings, ChevronRight, LogIn, Loader2, User } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { ZALO_URL } from '../components/Layout';
 import toast from 'react-hot-toast';
 
 export const DealerPortal = () => {
+  useSEO({
+    title: 'Cổng Thông Tin Đại Lý & Nhà Thầu | XS Plus Portal',
+    description: 'Dành cho đại lý và nhà thầu đang hợp tác với XS Plus. Xem bảng giá, chính sách chiết khấu, tài liệu kỹ thuật và liên hệ hỗ trợ ưu tiên.',
+    canonical: 'https://xsplus.vn/portal',
+  });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'quick' | 'full'>('quick');
@@ -214,7 +221,7 @@ export const DealerPortal = () => {
               <div className="bento-card bg-brand-gray p-8 text-white">
                 <h2 className="text-xl font-bold font-display mb-4 uppercase">Gửi Yêu Cầu Báo Giá</h2>
                 <p className="text-white/60 text-sm mb-6">Gửi thông số kỹ thuật qua Zalo để nhận báo giá trong 30 phút làm việc.</p>
-                <a href="https://zalo.me/0378226269" target="_blank" rel="noopener noreferrer"
+                <a href={ZALO_URL} target="_blank" rel="noopener noreferrer"
                   className="w-full py-4 bg-brand-orange text-white font-bold rounded-lg flex items-center justify-center space-x-2 hover:bg-brand-orange/90 transition-all uppercase tracking-wider text-sm">
                   <span>💬 Nhắn Zalo ngay</span>
                 </a>

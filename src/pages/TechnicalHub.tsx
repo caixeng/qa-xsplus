@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
+import { useSEO } from '../hooks/useSEO';
 import { motion, AnimatePresence } from 'motion/react';
-import { FileText, Download, Lock, CheckCircle, Mail, Phone, User, Building, ExternalLink } from 'lucide-react';
+import { FileText, Download, Lock, X, CheckCircle, Phone, User, Building, ExternalLink, Calculator } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { saveLead } from '../lib/supabase';
 import { HOTLINE, HOTLINE_DISPLAY, ZALO_URL } from '../components/Layout';
 
 const DOCUMENTS = [
-  { id: 'cad-clipin', title: 'File AutoCAD Trần Clip-in 600x600', type: 'DWG / DXF', category: 'CAD' },
-  { id: 'spec-layin', title: 'Thông số kỹ thuật Trần Lay-in', type: 'PDF', category: 'Specs' },
-  { id: 'guide-caro', title: 'Hướng dẫn lắp đặt Trần Caro (Cell)', type: 'PDF / Video', category: 'Guide' },
-  { id: 'cat-main', title: 'Catalog Tổng Hợp 2025 XS PLUS', type: 'PDF', category: 'Catalog' },
-  { id: 'spec-ushape', title: 'Chi tiết cấu tạo Hệ trần U-Shaped', type: 'DWG', category: 'CAD' },
+  { id: 'cad-clipin', title: 'File AutoCAD Trần Clip-in 600x600', type: 'DWG / DXF', category: 'CAD', url: '/docs/XS_Plus_Technical_Spec.pdf' },
+  { id: 'spec-layin', title: 'Thông số kỹ thuật Trần Lay-in', type: 'PDF', category: 'Specs', url: null },
+  { id: 'guide-caro', title: 'Hướng dẫn lắp đặt Trần Caro (Cell)', type: 'PDF / Video', category: 'Guide', url: null },
+  { id: 'cat-main', title: 'Catalog Tổng Hợp 2025 XS PLUS', type: 'PDF', category: 'Catalog', url: null },
+  { id: 'spec-ushape', title: 'Chi tiết cấu tạo Hệ trần U-Shaped', type: 'DWG', category: 'CAD', url: null },
 ];
 
 export const TechnicalHub = () => {
+  useSEO({
+    title: 'Tài Liệu Kỹ Thuật CAD/PDF | Dành Cho KTS & Nhà Thầu',
+    description: 'Tải miễn phí file CAD DWG/DXF, PDF kỹ thuật trần nhôm XS Plus. Bản vẽ chi tiết Clip-in, Lay-in, Caro Cell cho kiến trúc sư và nhà thầu thi công.',
+    canonical: 'https://xsplus.vn/technical',
+  });
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ name: '', phone: '', company: '' });
@@ -72,18 +79,27 @@ export const TechnicalHub = () => {
                     </div>
 
                     {!isUnlocked ? (
-                      <button 
+                      <button
                         onClick={() => setShowForm(true)}
                         className="flex items-center space-x-2 text-xs font-bold text-brand-gray/40 hover:text-brand-orange transition-colors"
                       >
                         <Lock size={14} />
                         <span>MỞ KHÓA</span>
                       </button>
-                    ) : (
-                      <button className="flex items-center space-x-2 text-xs font-bold text-brand-orange hover:underline">
+                    ) : doc.url ? (
+                      <a
+                        href={doc.url}
+                        download
+                        className="flex items-center space-x-2 text-xs font-bold text-brand-orange hover:underline"
+                      >
                         <Download size={14} />
                         <span>TẢI VỀ</span>
-                      </button>
+                      </a>
+                    ) : (
+                      <span className="flex items-center space-x-2 text-xs font-bold text-brand-gray/30 cursor-not-allowed" title="Tài liệu đang cập nhật">
+                        <Download size={14} />
+                        <span>ĐANG CẬP NHẬT</span>
+                      </span>
                     )}
                   </div>
                 ))}
@@ -119,6 +135,19 @@ export const TechnicalHub = () => {
             <div className="bento-card p-6 bg-white border border-surface-dim/40 italic text-sm text-brand-gray/50">
               "Bộ tài liệu giúp kiến trúc sư dễ dàng tích hợp trần nhôm XS PLUS vào bản vẽ 3D, tối ưu hóa quá trình bóc tách khối lượng và dự toán dự án."
             </div>
+
+            <Link
+              to="/calculator"
+              className="bento-card p-6 bg-brand-orange/5 border border-brand-orange/20 flex items-start space-x-4 hover:bg-brand-orange/10 transition-colors group"
+            >
+              <div className="w-10 h-10 bg-brand-orange/10 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-orange transition-colors">
+                <Calculator size={20} className="text-brand-orange group-hover:text-white transition-colors" />
+              </div>
+              <div>
+                <p className="font-bold text-brand-gray text-sm uppercase tracking-wide">Tính Vật Tư Tự Động</p>
+                <p className="text-brand-gray/50 text-xs mt-1 leading-relaxed">Nhập diện tích → nhận danh sách vật tư và khối lượng ngay.</p>
+              </div>
+            </Link>
           </div>
         </div>
       </div>
@@ -205,11 +234,11 @@ export const TechnicalHub = () => {
                 </p>
               </form>
 
-              <button 
+              <button
                 onClick={() => setShowForm(false)}
                 className="absolute top-4 right-4 text-white/50 hover:text-white"
               >
-                <Lock size={20} />
+                <X size={20} />
               </button>
             </motion.div>
           </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSEO } from '../hooks/useSEO';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { Filter, Search, Grid, List as ListIcon, ChevronDown, Check, X, Shield, Settings, Ruler, Palette, PackageX } from 'lucide-react';
@@ -32,6 +33,11 @@ const CheckboxFilter = ({ label, count, checked, onChange, ...props }: { label: 
 );
 
 export const ProductCatalog = () => {
+  useSEO({
+    title: 'Catalogue Trần Nhôm | Clip-in, Lay-in, Caro Cell, U-Shaped',
+    description: 'Xem toàn bộ hệ thống sản phẩm trần nhôm XS Plus: Clip-in 600x600, Lay-in T-Bar, Trần Caro Cell, Hệ U-Shaped. Thông số kỹ thuật, màu sắc, báo giá.',
+    canonical: 'https://xsplus.vn/catalog',
+  });
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);

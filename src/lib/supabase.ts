@@ -13,7 +13,7 @@ export interface Lead {
   area_m2?: number;
   note?: string;
   company?: string;
-  source: 'quote_modal' | 'technical_unlock' | 'calculator' | 'chatbot';
+  source: 'quote_modal' | 'technical_unlock' | 'calculator' | 'chatbot' | 'contact_page' | 'dealer_portal';
 }
 
 // Save lead to Supabase

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSEO } from '../hooks/useSEO';
 import { motion } from 'motion/react';
 import { ShieldCheck, Clock, Wrench, AlertTriangle, CheckCircle2, Phone, MessageCircle } from 'lucide-react';
 import { HOTLINE_DISPLAY, HOTLINE, ZALO_URL } from '../components/Layout';
@@ -18,6 +19,11 @@ const Section = ({ icon, title, children }: { icon: React.ReactNode; title: stri
 );
 
 export const PolicyPage = () => {
+  useSEO({
+    title: 'Chính Sách Bảo Hành & Điều Khoản | XS Plus',
+    description: 'Chính sách bảo hành trần nhôm XS Plus: bảo hành 10 năm tấm trần, 5 năm hệ xương, cam kết không phai màu 20 năm. Quy trình xử lý bảo hành chi tiết.',
+    canonical: 'https://xsplus.vn/chinh-sach',
+  });
   return (
     <div className="min-h-screen bg-surface-bright">
       {/* Header */}

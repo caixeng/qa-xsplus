@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useSEO } from '../hooks/useSEO';
 import { motion } from 'motion/react';
 import { Calculator, Download, Share2, Info, CheckCircle2, ChevronRight, PackageOpen } from 'lucide-react';
 import { ZALO_URL, HOTLINE_DISPLAY } from '../components/Layout';
+import { trackCalculatorUsed } from '../components/Tracking';
 import toast from 'react-hot-toast';
 
 interface MaterialResult {
@@ -47,6 +49,11 @@ const CEILING_TYPES = [
 ];
 
 export const MaterialCalculator = () => {
+  useSEO({
+    title: 'Tính Vật Tư Trần Nhôm Tự Động | Calculator XS Plus',
+    description: 'Công cụ tính toán vật tư trần nhôm miễn phí: nhập diện tích, chọn loại trần, nhận ngay danh sách vật liệu và khối lượng chính xác cho dự án.',
+    canonical: 'https://xsplus.vn/calculator',
+  });
   const [area, setArea] = useState<string>('');
   const [selectedType, setSelectedType] = useState(CEILING_TYPES[0].id);
   const [results, setResults] = useState<MaterialResult[] | null>(null);
@@ -78,6 +85,7 @@ export const MaterialCalculator = () => {
 
     setResults(finalResults);
     toast.success('Dự toán đã được cập nhật!');
+    trackCalculatorUsed(areaNum, selectedType);
   };
 
   const handleAction = (action: string) => {

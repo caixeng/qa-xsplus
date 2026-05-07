@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSEO } from '../hooks/useSEO';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { Search, ChevronRight, Calendar, User, ArrowRight, Tag } from 'lucide-react';
@@ -99,6 +100,11 @@ const BLOG_POSTS = [
 const CATEGORIES = ['Tất cả', 'Kiến thức kỹ thuật', 'Hướng dẫn thi công', 'Xu hướng thiết kế', 'Dự án tiêu biểu'];
 
 export const BlogHub = () => {
+  useSEO({
+    title: 'Tin Tức & Kiến Thức Trần Nhôm | Blog XS Plus',
+    description: 'Blog kỹ thuật trần nhôm: so sánh Clip-in vs Lay-in, hướng dẫn thi công, tiêu chuẩn thiết kế, xu hướng kiến trúc. Cập nhật từ chuyên gia XS Plus.',
+    canonical: 'https://xsplus.vn/tin-tuc',
+  });
   const [activeCategory, setActiveCategory] = useState('Tất cả');
   const [searchQuery, setSearchQuery] = useState('');
 

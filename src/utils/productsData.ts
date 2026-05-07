@@ -15,23 +15,6 @@ export interface Product {
   sort_order: number;
 }
 
-import { supabase } from '../lib/supabase';
-
-export interface Product {
-  id: string;
-  name: string;
-  category: 'Clip-in' | 'Lay-in' | 'Caro' | 'U-Shaped' | 'Linear';
-  thickness: string;
-  color: string;
-  system_type: string;
-  perfor: string;
-  image_url: string | null;
-  spec_pdf_url: string | null;
-  cad_url: string | null;
-  is_featured: boolean;
-  sort_order: number;
-}
-
 export const getProducts = async (): Promise<Product[]> => {
   const { data, error } = await supabase
     .from('products')

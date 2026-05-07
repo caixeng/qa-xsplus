@@ -6,11 +6,17 @@ import { ArrowLeft, Ruler, Shield, Palette, Settings, Download, Calculator, Chec
 import { Skeleton } from '../components/Skeleton';
 import toast from 'react-hot-toast';
 import { getProductImage } from '../utils/imageFallback';
+import { trackViewProduct } from '../components/Tracking';
+import { useSEO } from '../hooks/useSEO';
 
 export const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  useSEO({
+    title: product ? `${product.name} | Trần Nhôm XS Plus` : 'Sản Phẩm Trần Nhôm | XS Plus',
+    description: product?.description || 'Thông số kỹ thuật và báo giá trần nhôm XS Plus. Nhà máy sản xuất trực tiếp tại Hà Tĩnh.',
+  });
 
   useEffect(() => {
     async function fetchProduct() {
@@ -19,6 +25,7 @@ export const ProductDetail = () => {
         if (id) {
           const data = await getProductById(id);
           setProduct(data);
+          if (data) trackViewProduct(id, data.name);
         }
       } catch (error) {
         console.error('Error fetching product:', error);
