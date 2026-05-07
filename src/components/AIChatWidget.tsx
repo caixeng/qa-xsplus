@@ -16,6 +16,13 @@ export const AIChatWidget = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [systemContext, setSystemContext] = useState('');
+  
+  const suggestions = [
+    "Báo giá trần nhôm?",
+    "Các loại trần nhôm XS Plus?",
+    "Chính sách bảo hành?",
+    "Tư vấn kỹ thuật?"
+  ];
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -36,8 +43,12 @@ export const AIChatWidget = () => {
     if (!input.trim()) return;
 
     const userMsg = input.trim();
+    sendMessage(userMsg);
+  };
+
+  const sendMessage = async (text: string) => {
     setInput('');
-    setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+    setMessages(prev => [...prev, { role: 'user', content: text }]);
     setIsLoading(true);
 
     try {
@@ -55,14 +66,14 @@ export const AIChatWidget = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           system_instruction: {
-            parts: [{ text: `Bạn là nhân viên tư vấn bán hàng của nhà máy trần nhôm XS Plus. Dưới đây là kiến thức sản phẩm của bạn:\n\n${systemContext}\n\nQuy tắc trả lời:\n1. Luôn lịch sự, chuyên nghiệp, xưng em gọi anh/chị.\n2. Trả lời ngắn gọn, đúng trọng tâm câu hỏi.\n3. Nếu khách hỏi giá, báo giá tham khảo và chủ động xin Số Điện Thoại/Zalo để bộ phận kinh doanh liên hệ gửi báo giá chi tiết.\n4. Tuyệt đối không bịa đặt thông tin ngoài tài liệu được cung cấp.` }]
+            parts: [{ text: `Bạn là nhân viên tư vấn bán hàng của nhà máy trần nhôm XS Plus. Dưới đây là kiến thức sản phẩm của bạn:\n\n${systemContext}\n\nQuy tắc trả lời:\n1. Luôn lịch sự, chuyên nghiệp, xưng em gọi anh/chị.\n2. Trả lời ngắn gọn, đúng trọng tâm câu hỏi.\n3. Nếu khách hỏi giá, báo giá tham khảo và chủ động xin Số Điện Thoại/Zalo để bộ phận kinh doanh liên hệ gửi báo giá chi tiết.\n4. Tuyệt đối không bịa đặt thông tin ngoài tài liệu được cung cấp.\n5. SỬ DỤNG ĐỊNH DẠNG: Dùng Markdown (**đậm**) cho thông số quan trọng, dùng bullet points khi liệt kê, và thêm emoji phù hợp (như 🏗️, ✅, 📞) để câu trả lời sinh động, dễ đọc.` }]
           },
           contents: [
             ...messages.filter(m => m.role !== 'system').map(m => ({
               role: m.role,
               parts: [{ text: m.content }]
             })),
-            { role: 'user', parts: [{ text: userMsg }] }
+            { role: 'user', parts: [{ text: text }] }
           ]
         })
       });
@@ -140,8 +151,17 @@ export const AIChatWidget = () => {
                     <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-brand-orange text-white ml-2' : 'bg-brand-gray text-white mr-2'}`}>
                       {msg.role === 'user' ? <User size={12} /> : <Bot size={12} />}
                     </div>
-                    <div className={`p-3 rounded-2xl text-sm ${msg.role === 'user' ? 'bg-brand-orange text-white rounded-tr-none' : 'bg-surface-dim text-brand-gray rounded-tl-none border border-surface-dim/50'}`}>
-                      {msg.content}
+                    <div className={`p-3 rounded-2xl text-sm whitespace-pre-wrap ${msg.role === 'user' ? 'bg-brand-orange text-white rounded-tr-none' : 'bg-surface-dim text-brand-gray rounded-tl-none border border-surface-dim/50'}`}>
+                      {msg.content.split('\n').map((line, i) => (
+                        <div key={i}>
+                          {line.split(/(\*\*.*?\*\*)/).map((part, j) => {
+                            if (part.startsWith('**') && part.endsWith('**')) {
+                              return <strong key={j}>{part.slice(2, -2)}</strong>;
+                            }
+                            return part;
+                          })}
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -164,6 +184,20 @@ export const AIChatWidget = () => {
 
             {/* Input */}
             <div className="p-4 bg-white border-t border-surface-dim">
+              {/* Quick Suggestions */}
+              {messages.length < 3 && (
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {suggestions.map((s, i) => (
+                    <button
+                      key={i}
+                      onClick={() => sendMessage(s)}
+                      className="text-[11px] bg-surface-bright border border-surface-dim hover:border-brand-orange hover:text-brand-orange px-3 py-1.5 rounded-full transition-all text-brand-gray/70"
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              )}
               <form 
                 onSubmit={(e) => { e.preventDefault(); handleSend(); }}
                 className="flex items-center relative"
